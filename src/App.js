@@ -1,24 +1,52 @@
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+// import Container from './components/Container';
+import Header from './components/Header';
+import Item from './components/Item'
+import NotFound from './components/NotFound';
+import Search from './components/Search';
+import './index.css'
 
-function App() {
+function App(searchTerm) {
+
+  // Prevent page reload, clear input, set URL and push history on submit
+  const handleSubmit = (e, history, searchInput) => {
+    e.preventDefault();
+    e.currentTarget.reset();
+    let url = `/search/${searchInput}`;
+    history(url);
+  };
+
+  const searchInput = props => {
+    searchTerm = props.match.params.searchInput;
+    return searchTerm;
+  }
+
+  const setHistory = props => {
+    const history = props.history;
+    return history;
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+
+    <Router>
+      <div className="container">
+        <Header 
+        handleSubmit={handleSubmit}
+        history={setHistory}
+        />
+        <Routes>
+          {/* <Route exact path='/' element={<Navigate replace to='/mountain' />} /> */}
+          <Route exact path='/' element={<Item searchTerm="mountain" />} />
+          <Route exact path='/mountain' element={<Item searchTerm="mountain" />} />
+          <Route exact path='/beaches' element={<Item searchTerm="beach" />} />
+          <Route exact path='/birds' element={<Item searchTerm="bird" />} />
+          <Route exact path='/food' element={<Item searchTerm="food" />} />
+          <Route path="/search/:searchInput" element={<Search searchTerm={searchInput} />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </div>
+    </Router>
+
   );
 }
 
